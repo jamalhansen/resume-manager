@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.name }} - Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1d1e20;
+            --surface-color: #2e2e33;
+            --text-primary: #dadadb;
+            --text-secondary: #9b9c9d;
+            --emerald: #10b981;
+            --gold: #DFD150;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            line-height: 1.5;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+        }
+        .header {
+            border-left: 3px solid var(--emerald);
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 42px;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+        .header p {
+            color: var(--text-secondary);
+            font-size: 18px;
+            margin-top: 5px;
+        }
+        .container {
+            display: flex;
+            gap: 50px;
+        }
+        .main {
+            flex: 3;
+        }
+        .sidebar {
+            flex: 2;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: var(--emerald);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        .job {
+            margin-bottom: 25px;
+        }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .job-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .company {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .date {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .bullets {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .bullet {
+            margin-bottom: 8px;
+        }
+        .impact {
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+        }
+        .skill-tag {
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .edu-item {
+            margin-bottom: 15px;
+        }
+        .edu-inst {
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .edu-detail {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ profile.name }}</h1>
+        <p>{{ profile.summary or 'Career Strategist & Technology Leader' }}</p>
+    </div>
+
+    <div class="container">
+        <div class="main">
+            <div class="section">
+                <div class="section-title">Experience</div>
+                {% for job in jobs %}
+                <div class="job">
+                    <div class="job-header">
+                        <span class="job-title">{{ job.role }}</span>
+                        <span class="date">{{ job.start_date }} — {{ job.end_date or 'PRESENT' }}</span>
+                    </div>
+                    <div class="company">{{ job.company }} // {{ job.location }}</div>
+                    <ul class="bullets">
+                        {% for bullet in job.bullets %}
+                        <li class="bullet">
+                            {{ bullet.content }}
+                            {% if bullet.impact_metric %}
+                            <span class="impact">[{{ bullet.impact_metric }}]</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="section">
+                <div class="section-title">Expertise</div>
+                <ul class="skill-list">
+                    {% for skill in skills %}
+                    <li class="skill-tag">{{ skill.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Education</div>
+                {% for edu in education %}
+                <div class="edu-item">
+                    <div class="edu-inst">{{ edu.institution }}</div>
+                    <div class="edu-detail">{{ edu.degree }}{% if edu.field %} in {{ edu.field }}{% endif %} ({{ edu.year }})</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="section">
+                <div class="section-title">Contact</div>
+                <div class="edu-detail">{{ profile.email }}</div>
+                <div class="edu-detail">{{ profile.phone }}</div>
+                <div class="edu-detail">{{ profile.location }}</div>
+                {% if profile.linkedin %}<div class="edu-detail">{{ profile.linkedin }}</div>{% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

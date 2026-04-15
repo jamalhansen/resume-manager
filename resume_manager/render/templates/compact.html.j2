@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.name }} - Resume</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 40px; color: #333; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .header p { margin: 5px 0; color: #666; }
+        .container { display: flex; gap: 40px; }
+        .main { flex: 2; }
+        .sidebar { flex: 1; }
+        .section-title { font-size: 18px; border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; }
+        .job { margin-bottom: 20px; }
+        .job-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .job-title { font-weight: bold; font-size: 16px; }
+        .company { font-style: italic; color: #555; }
+        .date { color: #888; font-size: 14px; }
+        .bullets { margin-top: 5px; padding-left: 20px; }
+        .bullet { margin-bottom: 3px; }
+        .skill-list { list-style: none; padding: 0; }
+        .skill { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ profile.name }}</h1>
+        <p>{{ profile.location }} | {{ profile.email }} | {{ profile.phone }}</p>
+        {% if profile.linkedin %}<p>{{ profile.linkedin }}</p>{% endif %}
+    </div>
+
+    <div class="container">
+        <div class="main">
+            <div class="section-title">Experience</div>
+            {% for job in jobs %}
+            <div class="job">
+                <div class="job-header">
+                    <span class="job-title">{{ job.role }}</span>
+                    <span class="date">{{ job.start_date }} - {{ job.end_date or 'Present' }}</span>
+                </div>
+                <div class="company">{{ job.company }} | {{ job.location }}</div>
+                <ul class="bullets">
+                    {% for bullet in job.bullets %}
+                    <li class="bullet">{{ bullet.content }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="sidebar">
+            <div class="section-title">Skills</div>
+            <ul class="skill-list">
+                {% for skill in skills %}
+                <li class="skill">{{ skill.name }}</li>
+                {% endfor %}
+            </ul>
+
+            <div class="section-title">Education</div>
+            {% for edu in education %}
+            <div class="edu">
+                <div class="job-title">{{ edu.institution }}</div>
+                <p>{{ edu.degree }}{% if edu.field %} in {{ edu.field }}{% endif %} ({{ edu.year }})</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

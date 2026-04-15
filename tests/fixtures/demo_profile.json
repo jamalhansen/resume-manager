@@ -1,0 +1,48 @@
+{
+  "profile": {
+    "name": "Alex Rivera",
+    "email": "alex.rivera@example.com",
+    "phone": "(555) 000-0000",
+    "location": "Austin, Texas",
+    "linkedin": "https://linkedin.com/in/alexrivera",
+    "github": "https://github.com/arivera",
+    "summary": "Data-driven engineering leader with 10+ years of experience building scalable systems and high-performing teams."
+  },
+  "jobs": [
+    {
+      "id": 1,
+      "company": "CloudScale Solutions",
+      "role": "Director of Engineering",
+      "start_date": "2021-03",
+      "end_date": "Present",
+      "location": "Austin, TX",
+      "bullets": [
+        { "id": 101, "content": "Scaled engineering team from 15 to 60+ engineers while maintaining a 95% retention rate.", "impact_metric": "4x growth" },
+        { "id": 102, "content": "Led the migration to a microservices architecture, reducing deployment time from 2 weeks to 2 hours.", "impact_metric": "98% improvement" }
+      ]
+    },
+    {
+      "id": 2,
+      "company": "DataFlow Inc",
+      "role": "Principal Engineer",
+      "start_date": "2018-06",
+      "end_date": "2021-02",
+      "location": "Remote",
+      "bullets": [
+        { "id": 201, "content": "Architected a real-time data processing pipeline handling 500k+ events per second.", "impact_metric": "500k EPS" },
+        { "id": 202, "content": "Mentored 10+ senior engineers, 4 of whom were promoted to Staff/Lead roles.", "impact_metric": "40% promotion rate" }
+      ]
+    }
+  ],
+  "skills": [
+    { "name": "Distributed Systems" },
+    { "name": "Python/Go" },
+    { "name": "Kubernetes" },
+    { "name": "Team Leadership" },
+    { "name": "Cloud Architecture" }
+  ],
+  "education": [
+    { "institution": "University of California, Berkeley", "degree": "MS in Computer Science", "year": "2015" },
+    { "institution": "Stanford University", "degree": "BS in Computer Science", "year": "2013" }
+  ]
+}

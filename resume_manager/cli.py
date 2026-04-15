@@ -22,6 +22,11 @@ def main():
     import_parser.add_argument("--ecv", help="Path to EnhancCV PDF")
     import_parser.add_argument("--linkedin", help="Path to LinkedIn data export zip")
 
+    # demo
+    demo_parser = subparsers.add_parser("demo", help="Generate a demo resume")
+    demo_parser.add_argument("--template", default="brand", choices=["brand", "compact"], help="Template to use")
+    demo_parser.add_argument("--output", help="Output path")
+
     args = parser.parse_args()
 
     db_path = get_db_path(args.db)
@@ -72,6 +77,21 @@ def main():
             print(f"Imported from {args.linkedin}")
             
         conn.close()
+
+    elif args.command == "demo":
+        from .render.renderer import render
+        import json
+        
+        fixture_path = Path(__file__).parent.parent / "tests" / "fixtures" / "demo_profile.json"
+        with open(fixture_path) as f:
+            data = json.load(f)
+            
+        output_path = args.output or "output/demo-resume.pdf"
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        
+        print(f"Generating demo resume using {args.template} template...")
+        render(args.template, data, output_path)
+        print(f"Demo resume generated at {output_path}")
 
     else:
         parser.print_help()
