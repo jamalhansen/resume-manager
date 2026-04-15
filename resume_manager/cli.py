@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 from dotenv import load_dotenv
 from .db import get_db_path, init_db, get_connection
 
@@ -15,6 +16,11 @@ def main():
 
     # status
     subparsers.add_parser("status", help="Show database status")
+
+    # import
+    import_parser = subparsers.add_parser("import", help="Import from an existing source")
+    import_parser.add_argument("--ecv", help="Path to EnhancCV PDF")
+    import_parser.add_argument("--linkedin", help="Path to LinkedIn data export zip")
 
     args = parser.parse_args()
 
@@ -42,6 +48,29 @@ def main():
             count = cursor.fetchone()[0]
             print(f"  {table.capitalize()}: {count} records")
         
+        conn.close()
+
+    elif args.command == "import":
+        if not db_path.exists():
+            print(f"Database does not exist at {db_path}. Run 'init' first.")
+            return
+            
+        conn = get_connection(db_path)
+        
+        if args.ecv:
+            from .intake.enhancv import import_enhancv
+            if args.verbose:
+                print(f"Importing EnhancCV PDF from {args.ecv}")
+            import_enhancv(Path(args.ecv), conn)
+            print(f"Imported from {args.ecv}")
+            
+        if args.linkedin:
+            from .intake.linkedin import import_linkedin
+            if args.verbose:
+                print(f"Importing LinkedIn zip from {args.linkedin}")
+            import_linkedin(Path(args.linkedin), conn)
+            print(f"Imported from {args.linkedin}")
+            
         conn.close()
 
     else:
