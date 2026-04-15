@@ -1,0 +1,30 @@
+[project]
+name = "resume-manager"
+version = "0.1.0"
+description = "Maintain a structured database of professional experience and generate tailored resumes."
+readme = "README.md"
+authors = [
+    { name = "Jamal Hansen", email = "jamal.hansen@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.95.0",
+    "google-generativeai>=0.8.6",
+    "jinja2>=3.1.6",
+    "playwright>=1.58.0",
+    "python-dotenv>=1.2.2",
+    "requests>=2.33.1",
+]
+
+[project.scripts]
+resume-manager = "resume_manager.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-mock>=3.15.1",
+]
