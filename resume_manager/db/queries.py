@@ -73,3 +73,46 @@ def insert_volunteer(conn, organization, role, description=None, start_date=None
     """, (organization, role, description, start_date, end_date, tags_json))
     conn.commit()
     return cursor.lastrowid
+
+def get_all_content(conn):
+    cursor = conn.cursor()
+    
+    # Profile
+    cursor.execute("SELECT * FROM profile LIMIT 1")
+    profile_row = cursor.fetchone()
+    profile = {}
+    if profile_row:
+        columns = [d[0] for d in cursor.description]
+        profile = dict(zip(columns, profile_row))
+    
+    # Jobs and bullets
+    cursor.execute("SELECT * FROM jobs ORDER BY start_date DESC")
+    job_rows = cursor.fetchall()
+    jobs = []
+    job_columns = [d[0] for d in cursor.description]
+    for row in job_rows:
+        job = dict(zip(job_columns, row))
+        cursor.execute("SELECT * FROM bullets WHERE job_id = ?", (job['id'],))
+        bullet_rows = cursor.fetchall()
+        bullet_columns = [d[0] for d in cursor.description]
+        job['bullets'] = [dict(zip(bullet_columns, b)) for b in bullet_rows]
+        jobs.append(job)
+    
+    # Skills
+    cursor.execute("SELECT * FROM skills")
+    skill_rows = cursor.fetchall()
+    skill_columns = [d[0] for d in cursor.description]
+    skills = [dict(zip(skill_columns, s)) for s in skill_rows]
+    
+    # Education
+    cursor.execute("SELECT * FROM education")
+    edu_rows = cursor.fetchall()
+    edu_columns = [d[0] for d in cursor.description]
+    education = [dict(zip(edu_columns, e)) for e in edu_rows]
+    
+    return {
+        "profile": profile,
+        "jobs": jobs,
+        "skills": skills,
+        "education": education
+    }

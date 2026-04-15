@@ -37,3 +37,27 @@ def curate(jd, db_content, provider_name="anthropic", model=None):
         return json.loads(response)
     except Exception as e:
         raise ValueError(f"Failed to parse curator response: {e}\nResponse: {response}")
+
+def filter_content(all_content, selection):
+    # Map of job_id -> [bullet_ids]
+    job_map = {j['job_id']: j['bullets'] for j in selection.get('jobs', [])}
+    # List of skill_ids
+    selected_skill_ids = [s.get('skill_id') for s in selection.get('skills', []) if s.get('skill_id')]
+    
+    filtered_jobs = []
+    for job in all_content['jobs']:
+        if job['id'] in job_map:
+            # Filter bullets
+            selected_bullet_ids = job_map[job['id']]
+            job_copy = job.copy()
+            job_copy['bullets'] = [b for b in job['bullets'] if b['id'] in selected_bullet_ids]
+            filtered_jobs.append(job_copy)
+            
+    filtered_skills = [s for s in all_content['skills'] if s['id'] in selected_skill_ids]
+    
+    return {
+        "profile": all_content['profile'],
+        "jobs": filtered_jobs,
+        "skills": filtered_skills,
+        "education": all_content['education']
+    }
