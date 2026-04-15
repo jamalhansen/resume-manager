@@ -42,7 +42,7 @@ def main():
 
     # list
     list_parser = subparsers.add_parser("list", help="List database contents")
-    list_parser.add_argument("table", choices=["jobs", "bullets", "skills", "education"], help="Table to list")
+    list_parser.add_argument("table", choices=["jobs", "bullets", "skills", "education", "logs"], help="Table to list")
     list_parser.add_argument("--job-id", type=int, help="Filter bullets by job ID")
 
     # edit
@@ -167,6 +167,20 @@ def main():
             render(args.template, filtered_content, output_path)
             print(f"Resume generated at {output_path}")
             
+            # 6. Log
+            import hashlib
+            jd_hash = hashlib.sha256(jd.encode()).hexdigest()
+            from .db.queries import log_resume_generation
+            log_resume_generation(
+                conn,
+                job_title=args.title or "Tailored Resume",
+                company=Path(args.jd_file).stem,
+                template=args.template,
+                jd_hash=jd_hash,
+                output_path=str(output_path),
+                config_json=json.dumps(selection)
+            )
+            
         conn.close()
 
     elif args.command == "list":
@@ -200,6 +214,11 @@ def main():
                 
         elif args.table == "education":
             cursor.execute("SELECT id, institution, degree, year FROM education")
+            for row in cursor.fetchall():
+                print(f"[{row[0]}] {row[1]} - {row[2]} ({row[3]})")
+                
+        elif args.table == "logs":
+            cursor.execute("SELECT id, created_at, job_title, company FROM resume_log ORDER BY created_at DESC")
             for row in cursor.fetchall():
                 print(f"[{row[0]}] {row[1]} - {row[2]} ({row[3]})")
                 

@@ -116,3 +116,12 @@ def get_all_content(conn):
         "skills": skills,
         "education": education
     }
+
+def log_resume_generation(conn, job_title, company, template, jd_hash, output_path, config_json):
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO resume_log (job_title, company, template, jd_hash, output_path, config_json)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (job_title, company, template, jd_hash, output_path, config_json))
+    conn.commit()
+    return cursor.lastrowid
