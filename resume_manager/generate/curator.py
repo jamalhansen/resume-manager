@@ -15,9 +15,16 @@ def load_prompt():
 
 def curate(jd, db_content, provider_name="anthropic", model=None):
     system_prompt, user_template = load_prompt()
-    
+
+    # Limit to 10 most recent jobs to avoid sending all personal data to the LLM
+    # get_all_content already sorts by start_date DESC so first 10 = most recent
+    if isinstance(db_content, dict):
+        truncated_content = {**db_content, "jobs": db_content.get("jobs", [])[:10]}
+    else:
+        truncated_content = db_content
+
     template = Template(user_template)
-    user_prompt = template.render(jd=jd, db_content=db_content)
+    user_prompt = template.render(jd=jd, db_content=truncated_content)
     
     provider_class = PROVIDERS.get(provider_name)
     if not provider_class:

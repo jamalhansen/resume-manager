@@ -15,7 +15,7 @@ async def render_to_pdf(template_name, data, output_path):
     
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        page = await browser.new_content()
+        page = await browser.new_page()
         await page.set_content(html_content)
         
         # Wait for fonts to load

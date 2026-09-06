@@ -129,6 +129,9 @@ def main():
         conn = get_connection(db_path)
         
         # 1. Read JD
+        if not Path(args.jd_file).exists():
+            print(f"Error: Job description file not found: {args.jd_file}")
+            return
         with open(args.jd_file) as f:
             jd = f.read()
             

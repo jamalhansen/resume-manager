@@ -2,12 +2,22 @@ import json
 
 def insert_profile(conn, name, email=None, phone=None, location=None, linkedin=None, github=None, website=None, summary=None):
     cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO profile (name, email, phone, location, linkedin, github, website, summary)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (name, email, phone, location, linkedin, github, website, summary))
-    conn.commit()
-    return cursor.lastrowid
+    cursor.execute("SELECT id FROM profile LIMIT 1")
+    existing = cursor.fetchone()
+    if existing:
+        cursor.execute("""
+            UPDATE profile SET name=?, email=?, phone=?, location=?, linkedin=?, github=?, website=?, summary=?
+            WHERE id=?
+        """, (name, email, phone, location, linkedin, github, website, summary, existing[0]))
+        conn.commit()
+        return existing[0]
+    else:
+        cursor.execute("""
+            INSERT INTO profile (name, email, phone, location, linkedin, github, website, summary)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (name, email, phone, location, linkedin, github, website, summary))
+        conn.commit()
+        return cursor.lastrowid
 
 def upsert_job(conn, company, role, start_date, end_date=None, location=None, is_remote=0, sort_order=None):
     cursor = conn.cursor()

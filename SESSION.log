@@ -1,0 +1,47 @@
+# Session Log - Resume Manager Implementation
+Date: Wednesday, April 15, 2026
+
+## Phase 1: Foundation
+- Initialized project with `uv init`.
+- Set up directory structure and moved `resume_manager` to root.
+- Created `Makefile` including common py-tooling.
+- Installed and verified pre-commit hooks.
+- Configured `.gitignore` and `.env.example` to protect personal data.
+- Defined SQLite database schema in `resume_manager/db/schema.py`.
+- Implemented CLI `init` and `status` commands.
+- Verified database initialization with `tests/test_db.py`.
+
+## Phase 2: Import
+- Added `pypdf` dependency for EnhancCV metadata extraction.
+- Implemented `resume_manager/intake/enhancv.py` for PDF metadata parsing.
+- Implemented `resume_manager/intake/linkedin.py` for LinkedIn zip export parsing.
+- Created `resume_manager/db/queries.py` with typed query functions.
+- Added `import` command to CLI for both EnhancCV and LinkedIn sources.
+- Created synthetic test fixtures (PDF and Zip) using `generate_fixtures.py`.
+- Verified importers with `tests/test_enhancv_import.py` and `tests/test_linkedin_import.py`.
+
+## Phase 3: Providers and Curator
+- Created `resume_manager/providers/` package with abstraction for Anthropic, Gemini, and Local (Ollama) LLMs.
+- Developed LLM prompt templates for curation and strategy.
+- Implemented `resume_manager/generate/curator.py` for relevance-based item selection.
+- Implemented `resume_manager/generate/strategist.py` for question engineering.
+- Verified curation logic with mocked LLM tests in `tests/test_curator.py`.
+
+## Phase 4: Render
+- Created Jinja2 templates for `compact` (clean B&W) and `brand` (jamalhansen brand system) layouts.
+- Implemented `resume_manager/render/renderer.py` using Playwright for HTML-to-PDF conversion.
+- Added `demo` command to generate resumes using synthetic fixture data.
+- Verified template rendering with `tests/test_renderer.py`.
+
+## Phase 5: Generate and CLI Polish
+- Implemented full `generate` pipeline wiring Curator, Strategist, and Renderer.
+- Added `list` command to view database records.
+- Implemented `edit` command using `pyyaml` and system `$EDITOR`.
+- Added basic stub for `chat` intake.
+- Verified end-to-end dry-run generation in `tests/test_cli.py`.
+
+## Phase 6: Polish
+- Added resume generation logging to `resume_log` table.
+- Updated `list` command to display generation logs.
+- Wrote comprehensive `README.md` with installation and usage instructions.
+- Final linting and verification of all 12 test cases.
