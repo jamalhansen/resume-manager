@@ -1,7 +1,11 @@
 import json
 from pathlib import Path
 from jinja2 import Template
-from ..providers import PROVIDERS
+
+from local_first_common.cli import resolve_provider
+from local_first_common.providers import PROVIDERS
+from local_first_common.providers.base import BaseProvider
+from local_first_common.tracking import timed_run
 
 PROMPT_PATH = Path(__file__).parent / "prompts" / "curator.txt"
 
@@ -13,7 +17,7 @@ def load_prompt():
     user_template = user_part.strip()
     return system_prompt, user_template
 
-def curate(jd, db_content, provider_name="anthropic", model=None):
+def curate(jd, db_content, provider_name="anthropic", model=None, provider: BaseProvider | None = None):
     system_prompt, user_template = load_prompt()
 
     # Limit to 10 most recent jobs to avoid sending all personal data to the LLM
@@ -25,32 +29,34 @@ def curate(jd, db_content, provider_name="anthropic", model=None):
 
     template = Template(user_template)
     user_prompt = template.render(jd=jd, db_content=truncated_content)
-    
-    provider_class = PROVIDERS.get(provider_name)
-    if not provider_class:
-        raise ValueError(f"Unknown provider: {provider_name}")
-    
-    provider = provider_class(model=model)
-    response = provider.complete(system_prompt, user_prompt)
-    
-    # Try to extract JSON from response
-    try:
-        # LLMs sometimes wrap JSON in code blocks
-        if "```json" in response:
-            response = response.split("```json")[1].split("```")[0].strip()
-        elif "```" in response:
-            response = response.split("```")[1].split("```")[0].strip()
-        
-        return json.loads(response)
-    except Exception as e:
-        raise ValueError(f"Failed to parse curator response: {e}\nResponse: {response}")
+
+    if provider is None:
+        provider = resolve_provider(PROVIDERS, provider_name, model=model, tool_name="resume-manager")
+
+    with timed_run("resume-manager", provider.model, provider=provider.provider_name) as run:
+        response = provider.complete(system_prompt, user_prompt)
+
+        # Try to extract JSON from response
+        try:
+            # LLMs sometimes wrap JSON in code blocks
+            if "```json" in response:
+                response = response.split("```json")[1].split("```")[0].strip()
+            elif "```" in response:
+                response = response.split("```")[1].split("```")[0].strip()
+
+            result = json.loads(response)
+        except Exception as e:
+            raise ValueError(f"Failed to parse curator response: {e}\nResponse: {response}")
+
+        run.item_count = len(result.get("jobs", [])) + len(result.get("skills", []))
+        return result
 
 def filter_content(all_content, selection):
     # Map of job_id -> [bullet_ids]
     job_map = {j['job_id']: j['bullets'] for j in selection.get('jobs', [])}
     # List of skill_ids
     selected_skill_ids = [s.get('skill_id') for s in selection.get('skills', []) if s.get('skill_id')]
-    
+
     filtered_jobs = []
     for job in all_content['jobs']:
         if job['id'] in job_map:
@@ -59,9 +65,9 @@ def filter_content(all_content, selection):
             job_copy = job.copy()
             job_copy['bullets'] = [b for b in job['bullets'] if b['id'] in selected_bullet_ids]
             filtered_jobs.append(job_copy)
-            
+
     filtered_skills = [s for s in all_content['skills'] if s['id'] in selected_skill_ids]
-    
+
     return {
         "profile": all_content['profile'],
         "jobs": filtered_jobs,

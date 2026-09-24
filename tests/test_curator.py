@@ -1,5 +1,9 @@
-from unittest.mock import patch
+import json
+
+from local_first_common.testing import MockProvider
+
 from resume_manager.generate.curator import curate
+
 
 def test_curate_mocked():
     mock_response = {
@@ -18,12 +22,10 @@ def test_curate_mocked():
             }
         ]
     }
-    
-    import json
-    mock_response_str = json.dumps(mock_response)
-    
-    with patch("resume_manager.providers.anthropic_provider.AnthropicProvider.complete", return_value=mock_response_str):
-        result = curate("Senior Engineer role", "Some experience data")
-        assert result["rationale"] == "Test selection"
-        assert len(result["jobs"]) == 1
-        assert result["jobs"][0]["job_id"] == 1
+
+    provider = MockProvider(response=json.dumps(mock_response))
+    result = curate("Senior Engineer role", "Some experience data", provider=provider)
+    assert result["rationale"] == "Test selection"
+    assert len(result["jobs"]) == 1
+    assert result["jobs"][0]["job_id"] == 1
+    assert provider.calls  # the curator prompt was actually sent

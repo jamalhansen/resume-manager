@@ -8,14 +8,12 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "anthropic>=0.95.0",
-    "google-generativeai>=0.8.6",
     "jinja2>=3.1.6",
     "playwright>=1.58.0",
     "pypdf>=6.10.2",
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
-    "requests>=2.33.1",
+    "local-first-common[anthropic,gemini]>=0.1.0",
 ]
 
 [project.scripts]
@@ -24,6 +22,9 @@ resume-manager = "resume_manager.cli:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv.sources]
+local-first-common = { git = "https://github.com/jamalhansen/local-first-common.git", branch = "main" }
 
 [dependency-groups]
 dev = [
