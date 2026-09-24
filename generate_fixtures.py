@@ -1,8 +1,10 @@
+import csv
+import io
 import json
 import zipfile
-import io
-import csv
+
 from pypdf import PdfWriter
+
 
 def create_synthetic_ecv(output_path):
     writer = PdfWriter()

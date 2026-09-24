@@ -1,6 +1,7 @@
-import sqlite3
 import os
+import sqlite3
 from pathlib import Path
+
 from .schema import SCHEMA
 
 DEFAULT_DB_PATH = Path("~/.local/share/resume-manager/resume.db").expanduser()

@@ -1,7 +1,9 @@
-from pathlib import Path
-from resume_manager.cli import main
 import sys
+from pathlib import Path
 from unittest.mock import patch
+
+from resume_manager.cli import main
+
 
 def test_cli_init(tmp_path, monkeypatch):
     db_path = tmp_path / "test.db"
@@ -67,9 +69,11 @@ def test_cli_generate_dry_run(tmp_path, monkeypatch, capsys):
         "skills": []
     }
     
-    with patch("resume_manager.generate.curator.curate", return_value=mock_selection):
-        with patch.object(sys, 'argv', ['resume-manager', 'generate', str(jd_file), '--dry-run']):
-            main()
+    with (
+        patch("resume_manager.generate.curator.curate", return_value=mock_selection),
+        patch.object(sys, 'argv', ['resume-manager', 'generate', str(jd_file), '--dry-run']),
+    ):
+        main()
             
     captured = capsys.readouterr()
     assert "Dry run: Selection details" in captured.out

@@ -1,7 +1,10 @@
-import pytest
 from pathlib import Path
-from resume_manager.db import init_db, get_connection
+
+import pytest
+
+from resume_manager.db import get_connection, init_db
 from resume_manager.intake.enhancv import import_enhancv
+
 
 def test_import_enhancv(tmp_path):
     db_path = tmp_path / "test.db"

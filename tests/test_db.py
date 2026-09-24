@@ -1,5 +1,7 @@
 from pathlib import Path
-from resume_manager.db import init_db, get_connection, get_db_path
+
+from resume_manager.db import get_connection, get_db_path, init_db
+
 
 def test_init_db(tmp_path):
     db_path = tmp_path / "test.db"

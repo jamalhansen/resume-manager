@@ -1,7 +1,10 @@
-import pytest
 from pathlib import Path
-from resume_manager.db import init_db, get_connection
+
+import pytest
+
+from resume_manager.db import get_connection, init_db
 from resume_manager.intake.linkedin import import_linkedin
+
 
 def test_import_linkedin(tmp_path):
     db_path = tmp_path / "test.db"

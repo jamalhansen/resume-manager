@@ -1,5 +1,6 @@
 import json
 
+
 def insert_profile(conn, name, email=None, phone=None, location=None, linkedin=None, github=None, website=None, summary=None):
     cursor = conn.cursor()
     cursor.execute("SELECT id FROM profile LIMIT 1")

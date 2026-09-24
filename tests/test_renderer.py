@@ -1,7 +1,10 @@
 import json
-import jinja2
 from pathlib import Path
+
+import jinja2
+
 from resume_manager.render.renderer import TEMPLATE_DIR
+
 
 def test_render_html_compact():
     fixture_path = Path("tests/fixtures/demo_profile.json")

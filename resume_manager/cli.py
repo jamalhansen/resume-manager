@@ -2,8 +2,11 @@ import argparse
 import json
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
-from .db import get_db_path, init_db, get_connection
+
+from .db import get_connection, get_db_path, init_db
+
 
 def main():
     load_dotenv()
@@ -232,9 +235,10 @@ def main():
             print(f"Database does not exist at {db_path}. Run 'init' first.")
             return
             
-        import yaml
-        import tempfile
         import subprocess
+        import tempfile
+
+        import yaml
         
         conn = get_connection(db_path)
         cursor = conn.cursor()
@@ -269,7 +273,7 @@ def main():
             temp_path = tf.name
             
         editor = os.getenv("EDITOR", "vi")
-        subprocess.run([editor, temp_path])
+        subprocess.run([editor, temp_path], check=False)  # a nonzero editor exit (e.g. user aborted) shouldn't crash the CLI
         
         # Read back
         with open(temp_path) as f:

@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
-from jinja2 import Template
 
+from jinja2 import Template
 from local_first_common.cli import resolve_provider
 from local_first_common.providers import PROVIDERS
 from local_first_common.providers.base import BaseProvider
@@ -38,7 +38,7 @@ def strategize(selection, target_questions, provider_name="anthropic", model=Non
                 response = response.split("```")[1].split("```")[0].strip()
 
             result = json.loads(response)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - json.loads plus string slicing above can fail several ways (JSONDecodeError, IndexError); all convert to the same domain error
             raise ValueError(f"Failed to parse strategist response: {e}\nResponse: {response}")
 
         return result

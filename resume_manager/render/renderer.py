@@ -1,6 +1,7 @@
-import jinja2
 import asyncio
 from pathlib import Path
+
+import jinja2
 from playwright.async_api import async_playwright
 
 TEMPLATE_DIR = Path(__file__).parent / "templates"

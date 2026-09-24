@@ -1,0 +1,46 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+/ecv-data (\173\042header\042\072 \173\042name\042\072 \042Jane Doe\042\054 \042email\042\072 \042jane\100example\056com\042\054 \042phone\042\072 \042555\0551234\042\054 \042location\042\072 \042Remote\042\054 \042links\042\072 \133\173\042title\042\072 \042LinkedIn\042\054 \042url\042\072 \042https\072\057\057linkedin\056com\057in\057janedoe\042\175\135\054 \042summary\042\072 \042Senior engineer \204 test fixture profile\056\042\175\054 \042sections\042\072 \133\173\042type\042\072 \042ExperienceSection\042\054 \042items\042\072 \133\173\042company\042\072 \173\042text\042\072 \042Tech Corp\042\175\054 \042role\042\072 \173\042text\042\072 \042Senior Engineer\042\175\054 \042startDate\042\072 \0422020\05501\042\054 \042endDate\042\072 \0422023\05501\042\054 \042location\042\072 \042Remote\042\054 \042description\042\072 \133\173\042text\042\072 \042Led a team of 5 to deliver X\056\042\175\054 \173\042text\042\072 \042Improved performance by 30\045\056\042\175\135\175\135\175\054 \173\042type\042\072 \042TalentSection\042\054 \042items\042\072 \133\173\042text\042\072 \042Python\042\175\054 \173\042text\042\072 \042SQL\042\175\135\175\054 \173\042type\042\072 \042EducationSection\042\054 \042items\042\072 \133\173\042institution\042\072 \042State University\042\054 \042degree\042\072 \042B\056S\056\042\054 \042field\042\072 \042Computer Science\042\054 \042year\042\072 \0422019\042\175\135\175\135\175)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+>>
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000015 00000 n 
+0000001482 00000 n 
+0000001541 00000 n 
+0000001590 00000 n 
+trailer
+<<
+/Size 5
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1684
+%%EOF

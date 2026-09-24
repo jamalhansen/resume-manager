@@ -1,8 +1,9 @@
-import zipfile
 import csv
 import io
+import zipfile
 
-from ..db.queries import insert_profile, upsert_job, insert_bullet, insert_education
+from ..db.queries import insert_bullet, insert_education, insert_profile, upsert_job
+
 
 def import_linkedin(zip_path, db_conn):
     with zipfile.ZipFile(zip_path, 'r') as z:

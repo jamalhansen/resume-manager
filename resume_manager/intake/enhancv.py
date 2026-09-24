@@ -1,6 +1,16 @@
 import json
+
 from pypdf import PdfReader
-from ..db.queries import insert_profile, upsert_job, insert_bullet, insert_skill, insert_education, insert_volunteer
+
+from ..db.queries import (
+    insert_bullet,
+    insert_education,
+    insert_profile,
+    insert_skill,
+    insert_volunteer,
+    upsert_job,
+)
+
 
 def extract_enhancv_data(pdf_path):
     reader = PdfReader(pdf_path)
@@ -10,7 +20,16 @@ def extract_enhancv_data(pdf_path):
         raise ValueError("No EnhancCV data found in PDF metadata.")
     
     raw_data = metadata['/ecv-data']
-    
+
+    # Known edge case, not yet hit against a real export: pypdf decodes a PDF
+    # string containing only ASCII characters to plain text directly, so the
+    # latin1->utf16 re-decode below has nothing to fail on -- it "succeeds"
+    # and produces garbage instead of raising. That garbage then fails
+    # json.loads(), which the outer except still converts to a clear
+    # ValueError, so this doesn't corrupt data -- but it would misreport an
+    # all-ASCII export as a decode failure instead of importing it. Fixture:
+    # scripts/make_sample_ecv_fixture.py deliberately includes a non-ASCII
+    # character (an em dash) to take the branch real EnhancCV exports use.
     try:
         if isinstance(raw_data, str):
             try:
@@ -19,9 +38,9 @@ def extract_enhancv_data(pdf_path):
                 data_str = raw_data
         else:
             data_str = raw_data.decode('utf-16')
-            
+
         return json.loads(data_str)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - several failure modes (UnicodeDecodeError, JSONDecodeError) all convert to the same domain error
         raise ValueError(f"Failed to decode EnhancCV data: {e}")
 
 def import_enhancv(pdf_path, db_conn):
