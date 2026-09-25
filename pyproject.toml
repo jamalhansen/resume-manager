@@ -8,6 +8,8 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "typer>=0.15.0",
+    "click<8.3.2",  # 8.3.2 breaks typer 0.24.1 option parsing (same pin as the rest of the fleet)
     "jinja2>=3.1.6",
     "playwright>=1.58.0",
     "pypdf>=6.10.2",
@@ -17,7 +19,7 @@ dependencies = [
 ]
 
 [project.scripts]
-resume-manager = "resume_manager.cli:main"
+resume-manager = "resume_manager.cli:app"
 
 [build-system]
 requires = ["hatchling"]

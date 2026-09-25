@@ -1,0 +1,259 @@
+[
+  {
+    "argv": [
+      "status"
+    ],
+    "exit": 0,
+    "stdout": "Database does not exist at <TMP>/resume.db. Run 'init' first.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "jobs"
+    ],
+    "exit": 0,
+    "stdout": "Database does not exist at <TMP>/resume.db. Run 'init' first.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "generate",
+      "{T}/jd.txt",
+      "--dry-run"
+    ],
+    "exit": 0,
+    "stdout": "Database does not exist at <TMP>/resume.db. Run 'init' first.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "-v",
+      "init"
+    ],
+    "exit": 0,
+    "stdout": "Initializing database at <TMP>/resume.db\nDatabase initialized at <TMP>/resume.db\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "status"
+    ],
+    "exit": 0,
+    "stdout": "Database: <TMP>/resume.db\n  Profile: 0 records\n  Jobs: 0 records\n  Bullets: 0 records\n  Skills: 0 records\n  Education: 0 records\n  Volunteer: 0 records\n  Resume_log: 0 records\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "import",
+      "--ecv",
+      "{E}"
+    ],
+    "exit": 0,
+    "stdout": "Imported from <FIXTURES>/sample_ecv.pdf\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "--verbose",
+      "import",
+      "--ecv",
+      "{E}"
+    ],
+    "exit": 0,
+    "stdout": "Importing EnhancCV PDF from <FIXTURES>/sample_ecv.pdf\nImported from <FIXTURES>/sample_ecv.pdf\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "status"
+    ],
+    "exit": 0,
+    "stdout": "Database: <TMP>/resume.db\n  Profile: 1 records\n  Jobs: 1 records\n  Bullets: 4 records\n  Skills: 4 records\n  Education: 2 records\n  Volunteer: 0 records\n  Resume_log: 0 records\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "jobs"
+    ],
+    "exit": 0,
+    "stdout": "[1] Tech Corp - Senior Engineer (2020-01)\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "bullets"
+    ],
+    "exit": 0,
+    "stdout": "[1] (Job 1) Led a team of 5 to deliver X.\n[2] (Job 1) Improved performance by 30%.\n[3] (Job 1) Led a team of 5 to deliver X.\n[4] (Job 1) Improved performance by 30%.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "bullets",
+      "--job-id",
+      "1"
+    ],
+    "exit": 0,
+    "stdout": "[1] Led a team of 5 to deliver X.\n[2] Improved performance by 30%.\n[3] Led a team of 5 to deliver X.\n[4] Improved performance by 30%.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "skills"
+    ],
+    "exit": 0,
+    "stdout": "[1] Python (technical)\n[2] SQL (technical)\n[3] Python (technical)\n[4] SQL (technical)\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "education"
+    ],
+    "exit": 0,
+    "stdout": "[1] State University - B.S. (2019)\n[2] State University - B.S. (2019)\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "logs"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "list",
+      "nothing"
+    ],
+    "exit": 2
+  },
+  {
+    "argv": [
+      "list",
+      "bullets",
+      "--job-id",
+      "x"
+    ],
+    "exit": 2
+  },
+  {
+    "argv": [
+      "edit",
+      "job"
+    ],
+    "exit": 0,
+    "stdout": "Error: ID required to edit job\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "edit",
+      "job",
+      "999"
+    ],
+    "exit": 0,
+    "stdout": "No record found in jobs\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "edit",
+      "job",
+      "1"
+    ],
+    "exit": 0,
+    "stdout": "No changes made.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "edit",
+      "profile"
+    ],
+    "exit": 0,
+    "stdout": "No changes made.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "edit",
+      "unknown"
+    ],
+    "exit": 2
+  },
+  {
+    "argv": [
+      "generate",
+      "{T}/missing-jd.txt",
+      "--dry-run"
+    ],
+    "exit": 0,
+    "stdout": "Error: Job description file not found: <TMP>/missing-jd.txt\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "generate",
+      "{T}/jd.txt",
+      "--template",
+      "fancy"
+    ],
+    "exit": 2
+  },
+  {
+    "argv": [
+      "--db",
+      "{T}/other.db",
+      "status"
+    ],
+    "exit": 0,
+    "stdout": "Database does not exist at <TMP>/other.db. Run 'init' first.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "--db",
+      "{T}/other.db",
+      "init"
+    ],
+    "exit": 0,
+    "stdout": "Database initialized at <TMP>/other.db\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "--db",
+      "{T}/other.db",
+      "status"
+    ],
+    "exit": 0,
+    "stdout": "Database: <TMP>/other.db\n  Profile: 0 records\n  Jobs: 0 records\n  Bullets: 0 records\n  Skills: 0 records\n  Education: 0 records\n  Volunteer: 0 records\n  Resume_log: 0 records\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "demo",
+      "--template",
+      "fancy"
+    ],
+    "exit": 2
+  },
+  {
+    "argv": [
+      "bogus"
+    ],
+    "exit": 2
+  },
+  {
+    "argv": [],
+    "exit": 0
+  }
+]
