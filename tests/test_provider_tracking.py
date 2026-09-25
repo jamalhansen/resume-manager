@@ -1,53 +1,52 @@
-"""resume-manager had its own copy of the provider abstraction (BaseProvider,
-AnthropicProvider, GeminiProvider, LocalProvider) instead of using
-local_first_common.providers -- no fallback, no tracking, no MockProvider.
-Migrated 2026-09-24; these confirm curate()/strategize() now log to the
-fleet's processing_log like every other tool."""
+"""LLM calls are logged once, by llm-gateway-service, attributed via resolve_provider's
+tool_name. The tool itself must not write its own processing_log row for them."""
 
 import json
 import os
+from unittest.mock import patch
 
 import duckdb
 from local_first_common.testing import MockProvider
 
-from resume_manager.generate.curator import curate
-from resume_manager.generate.strategist import strategize
+from resume_manager.generate import curator, strategist
 
 
-def _tracking_db():
-    return duckdb.connect(os.environ["LOCAL_FIRST_TRACKING_DB"])
-
-
-def test_curate_logs_a_processing_run():
-    provider = MockProvider(response=json.dumps({"rationale": "r", "jobs": [], "skills": []}))
-    curate("some JD", {"jobs": []}, provider=provider)
-
-    row = _tracking_db().execute(
-        "SELECT tool_name, model, provider, success FROM processing_log "
-        "WHERE tool_name = 'resume-manager' ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
-    assert row == ("resume-manager", "mock", "mock", True)
-
-
-def test_curate_logs_a_failed_run_on_bad_json():
-    provider = MockProvider(response="not json at all")
-
+def _resume_manager_rows() -> int:
+    path = os.environ["LOCAL_FIRST_TRACKING_DB"]
+    if not os.path.exists(path):
+        return 0
+    con = duckdb.connect(path)
     try:
-        curate("some JD", {"jobs": []}, provider=provider)
-    except ValueError:
-        pass
+        tables = {t[0] for t in con.execute("SHOW TABLES").fetchall()}
+        if "processing_log" not in tables:
+            return 0
+        return con.execute(
+            "SELECT count(*) FROM processing_log WHERE tool_name = 'resume-manager'"
+        ).fetchone()[0]
+    finally:
+        con.close()
 
-    row = _tracking_db().execute(
-        "SELECT success FROM processing_log WHERE tool_name = 'resume-manager' ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
-    assert row == (False,)
+
+def test_curate_resolves_provider_with_tool_name():
+    mock = MockProvider(response=json.dumps({"rationale": "r", "jobs": [], "skills": []}))
+    with patch.object(curator, "resolve_provider", return_value=mock) as resolve:
+        curator.curate("some JD", {"jobs": []})
+    assert resolve.call_args.kwargs["tool_name"] == "resume-manager"
 
 
-def test_strategize_logs_a_processing_run():
-    provider = MockProvider(response=json.dumps({"recommendations": "x", "ordered_jobs": [], "question_mappings": []}))
-    strategize({"jobs": []}, ["a question"], provider=provider)
+def test_strategize_resolves_provider_with_tool_name():
+    mock = MockProvider(
+        response=json.dumps({"recommendations": "x", "ordered_jobs": [], "question_mappings": []})
+    )
+    with patch.object(strategist, "resolve_provider", return_value=mock) as resolve:
+        strategist.strategize({"jobs": []}, ["a question"])
+    assert resolve.call_args.kwargs["tool_name"] == "resume-manager"
 
-    row = _tracking_db().execute(
-        "SELECT tool_name, success FROM processing_log WHERE tool_name = 'resume-manager' ORDER BY created_at DESC LIMIT 1"
-    ).fetchone()
-    assert row == ("resume-manager", True)
+
+def test_llm_calls_are_not_double_logged_by_the_tool():
+    before = _resume_manager_rows()
+    curator.curate(
+        "some JD", {"jobs": []},
+        provider=MockProvider(response=json.dumps({"rationale": "r", "jobs": [], "skills": []})),
+    )
+    assert _resume_manager_rows() == before

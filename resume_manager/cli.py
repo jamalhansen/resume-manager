@@ -4,8 +4,11 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from local_first_common.tracking import register_tool
 
 from .db import get_connection, get_db_path, init_db
+
+_TOOL = register_tool("resume-manager")
 
 
 def main():
